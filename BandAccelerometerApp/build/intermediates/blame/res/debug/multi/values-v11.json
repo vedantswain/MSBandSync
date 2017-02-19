@@ -1,0 +1,54 @@
+[
+    {
+        "outputFile": "/Users/vedantdasswain/AndroidstudioProjects/BandAccelerometerApp/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endLine": 4,
+                    "endColumn": 12,
+                    "endOffset": 194
+                },
+                "from": {
+                    "file": "/Users/vedantdasswain/AndroidstudioProjects/BandAccelerometerApp/res/values-v11/styles.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 182,
+                        "endLine": 8,
+                        "endColumn": 12,
+                        "endOffset": 323
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "outputFile": "/Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endLine": 4,
+                    "endColumn": 12,
+                    "endOffset": 194
+                },
+                "from": {
+                    "file": "/Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/res/values-v11/styles.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 182,
+                        "endLine": 8,
+                        "endColumn": 12,
+                        "endOffset": 323
+                    }
+                }
+            }
+        ]
+    }
+]
