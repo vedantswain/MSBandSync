@@ -25,7 +25,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
@@ -47,6 +49,8 @@ public class MainActivity extends Activity {
 	private BandClient client = null;
 	private Button btnStart;
 	private TextView txtStatus;
+
+	private boolean isServiceRunning = false;
 
 	private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
 		@Override
@@ -75,6 +79,8 @@ public class MainActivity extends Activity {
 
 		startService(new Intent(this, BackgroundBandService.class));
 
+		final EditText editTextPos = (EditText) findViewById(R.id.editTextPosition);
+		final EditText editTextServer = (EditText) findViewById(R.id.editTextServer);
 		txtStatus = (TextView) findViewById(R.id.txtStatus);
         btnStart = (Button) findViewById(R.id.btnStart);
 
@@ -85,25 +91,28 @@ public class MainActivity extends Activity {
 		btnStart.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				if(client.getSensorManager().getCurrentHeartRateConsent() ==
-//						UserConsent.GRANTED) {
-////					heartRateConsentButton.setVisibility(View.GONE);
-//					txtStatus.setText("Ready to Collect Data");
-//				} else {
-//					client.getSensorManager().requestHeartRateConsent(MainActivity.this,
-//							new HeartRateConsentListener() {
-//								@Override
-//								public void userAccepted(boolean b) {
-//									if (b) {
-////										heartRateConsentButton.setVisibility(View.GONE);
-////										toggleServiceButton.setVisibility(View.VISIBLE);
-//										txtStatus.setText("Ready to Collect Data");
-//									} else {
-//										txtStatus.setText("Heart Rate Permission Required!");
-//									}
-//								}
-//							});
-//				}
+				String newPos = editTextPos.getText().toString();
+				String newServer = editTextServer.getText().toString();
+
+				if(newPos!=""){
+					Common.setPosition(newPos);
+				}
+				if(newServer!=""){
+					Common.setServerApi(newServer);
+				}
+
+				if (!isServiceRunning){
+					startService(new Intent(MainActivity.this, BackgroundBandService.class));
+					isServiceRunning=true;
+					btnStart.setText("Stop");
+					Toast.makeText(MainActivity.this, "Sensor service started",Toast.LENGTH_LONG).show();
+				}
+				else {
+					stopService(new Intent(MainActivity.this, BackgroundBandService.class));
+					isServiceRunning=false;
+					btnStart.setText("Start");
+					Toast.makeText(MainActivity.this, "Sensor service stopped",Toast.LENGTH_LONG).show();
+				}
 			}
 		});
     }
@@ -132,7 +141,6 @@ public class MainActivity extends Activity {
 			try {
 				if (getConnectedBandClient()) {
 					appendToUI("Band is connected.\n");
-					client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
 					client.getSensorManager().registerAccelerometerEventListener(mAccelerometerEventListener, SampleRate.MS16);
 				} else {
 					appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");

@@ -5,18 +5,28 @@
     android:layout_margin="15dp"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/txtStep"
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/steps" />
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextPosition"
+        android:hint="Position" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/editTextServer"
+        android:hint="Server Address" />
 
     <Button
         android:id="@+id/btnStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start" />
-    
+
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="match_parent"

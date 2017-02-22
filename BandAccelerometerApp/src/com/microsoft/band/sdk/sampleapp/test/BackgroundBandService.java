@@ -53,7 +53,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
             Log.d("Error", e.getMessage());
             this.stopSelf();
         }
-        return Service.START_STICKY;
+        return Service.START_NOT_STICKY;
     }
 
     @Override
@@ -96,6 +96,8 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
         Intent resetView = new Intent();
         resetView.setAction("ResetView");
         sendBroadcast(resetView);
+
+//        stopSelf();
     }
 
     @Override
@@ -107,29 +109,11 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
         protected Void doInBackground(Void... params) {
             Log.d("BackgroundBandService", "Monitor is working");
 
+            Log.d(TAG,"Postion: "+Common.POSITION+"\n"+"Server: "+Common.SERVER_API);
+
             if (getConnectedBandClient()) {
                 Log.d("BackgroundBandService", "Client is connected");
 
-//                mHeartRateEventListener = new BandHeartRateEventListener() {
-//                    @Override
-//                    public void onBandHeartRateChanged(final BandHeartRateEvent event) {
-//                        if (event != null) {
-//                            currentHeartDate = new Date();
-//                            heartCounter += 1;
-//                            Log.d("HeartRate", String.format("%d beats per minute, Quality = %s"
-//                                            + "Time = %s", event.getHeartRate(), event.getQuality(),
-//                                    currentHeartDate.toString()));
-//                            outputHeartRate += String.format("%s,%d,%s\n",
-//                                    Long.toString(currentHeartDate.getTime()), event.getHeartRate(),
-//                                    event.getQuality());
-//                            if (heartCounter == 60) {
-//                                writeFile("HeartRate",outputHeartRate);
-//                                heartCounter = 0;
-//                                outputHeartRate = "";
-//                            }
-//                        }
-//                    }
-//                };
 
                 mAccelerometerEventListener = new BandAccelerometerEventListener() {
                     @Override
@@ -143,12 +127,6 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
                             float accelZ = event.getAccelerationZ();
 
                             Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
-//                            outputAccelerometer += String.format("%s,%f,%f,%f\n",
-//                                    Long.toString(currentAccelDate.getTime()), event.getAccelerationX(),
-//                                    event.getAccelerationY(), event.getAccelerationZ());
-//                            if (accelCounter == 960) {
-////                                writeFile("Accelerometer",outputAccelerometer);
-//                            }
 
                             AccelObject ao = new AccelObject(Common.POSITION,accelX,accelY,accelZ, System.currentTimeMillis());
                             (new DataPushTask(context,ao,listener)).execute();
@@ -157,7 +135,6 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
                 };
 
                 try {
-//                    client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
                     client.getSensorManager().registerAccelerometerEventListener(mAccelerometerEventListener, SampleRate.MS16);
                 } catch (BandException ex) {
                     Log.d("BandException", ex.getMessage());

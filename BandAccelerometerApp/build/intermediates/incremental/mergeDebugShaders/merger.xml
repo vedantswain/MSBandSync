@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/vedantdasswain/AndroidstudioProjects/BandAccelerometerApp/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/Users/vedantdasswain/AndroidstudioProjects/BandAccelerometerApp/build-types/debug/shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/build-types/debug/shaders"/></dataSet></merger>

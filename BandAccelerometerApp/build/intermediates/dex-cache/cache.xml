@@ -3,12 +3,12 @@
 
     <item
         is-multidex="false"
-        jar="/Users/vedantdasswain/AndroidstudioProjects/BandAccelerometerApp/libs/microsoft-band-1.3.20307.2.jar"
+        jar="/Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/libs/microsoft-band-1.3.20307.2.jar"
         jumboMode="false"
         optimize="true"
         revision="23.0.1"
         sha1="f14888994429a404549c37653bc6e4c6a8c39a8e">
-        <dex dex="/Users/vedantdasswain/AndroidstudioProjects/BandAccelerometerApp/build/intermediates/pre-dexed/debug/microsoft-band-1.3.20307.2_6ae6474ddddea8b68c8ea85e559b651a579c1628.jar" />
+        <dex dex="/Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/build/intermediates/pre-dexed/debug/microsoft-band-1.3.20307.2_88c9ebf82c29dab5708cfe49d9bb5445e420c267.jar" />
     </item>
 
 </items>

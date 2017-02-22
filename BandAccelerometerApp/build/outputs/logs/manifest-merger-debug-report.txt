@@ -42,7 +42,7 @@ ADDED from /Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/And
 	android:allowBackup
 		ADDED from /Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/AndroidManifest.xml:19:9-35
 	android:icon
-		ADDED from /Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/AndroidManifest.xml:20:9-45
+		ADDED from /Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/AndroidManifest.xml:20:9-43
 	android:theme
 		ADDED from /Users/vedantdasswain/GitRepositories/CS7470/BandAccelerometerApp/AndroidManifest.xml:22:9-40
 activity#com.microsoft.band.sdk.sampleapp.test.MainActivity
