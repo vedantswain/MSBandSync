@@ -126,6 +126,9 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
                             float accelY = event.getAccelerationY();
                             float accelZ = event.getAccelerationZ();
 
+                            Date d = new Date();
+
+                            Log.d(TAG,"Time: "+(new Date(System.currentTimeMillis())).toString());
                             Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
 
                             AccelObject ao = new AccelObject(Common.POSITION,accelX,accelY,accelZ, System.currentTimeMillis());

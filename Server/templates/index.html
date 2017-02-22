@@ -43,7 +43,7 @@
         var API_endPoint = "http://"+"0.0.0.0"+":"+"5000/"+"data"
 
         var limit = 60 * 1,
-            duration = 750,
+            duration = 250,
             now = new Date(Date.now() - duration)
 
         var width = 500,
@@ -78,7 +78,7 @@
             .range([0, width])
 
         var y = d3.scale.linear()
-            .domain([-1, 1])
+            .domain([-10, 10])
             .range([height, 0])
 
         var line = d3.svg.line()
@@ -115,6 +115,8 @@
           $.getJSON(API_endPoint, function( data ) {
             
             // var json = JSON.parse(data);
+            // console.log(data)
+
             for(var i in data){
 
               var obj = JSON.parse(data[i])
@@ -122,6 +124,7 @@
               // console.log(obj)
 
               now = new Date(obj.timestamp)
+              // now = new Date()
 
               // Add new values
               for (var name in groups) {
