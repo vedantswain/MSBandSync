@@ -57,8 +57,8 @@ def api_data():
 			resp = Response(js, status=200, mimetype='application/json')
 			# if dataNumber % displayFreq == 0:
 			dataList.append(js);
-			# if len(dataList)>20:
-			# 	dataList.pop(0)
+			if len(dataList)>16:
+				dataList.pop(0)
 			# dataNumber+=1
 		return resp
 

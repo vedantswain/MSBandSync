@@ -43,7 +43,7 @@
         var API_endPoint = "http://"+"0.0.0.0"+":"+"5000/"+"data"
 
         var limit = 10 * 1,
-            duration = 1000, //Time between multiple frames
+            duration = 500, //Time between multiple frames
             now = new Date(Date.now() - duration)
 
         var width = 500,
@@ -117,6 +117,9 @@
             // var json = JSON.parse(data);
             // console.log(new Date(JSON.parse(data[0]).timestamp))
 
+            var oldMax = 10
+            var oldMin = -10
+
             for(var i in data){
 
               var obj = JSON.parse(data[i])
@@ -135,12 +138,16 @@
                 
                 groups["eventZ"].data.push(obj.z*9.8)
                 groups["eventZ"].path.attr('d', line)
+
+                oldMax = Math.max(10,oldMax,obj.x*9.8,obj.y*9.8,obj.z*9.8)
+                oldMin = Math.min(-10,oldMax,obj.x*9.8,obj.y*9.8,obj.z*9.8)
                 
               }
 
               // Shift domain
               x.domain([now - (limit - 2) * duration, now - duration])
-
+              y.domain([oldMin - 1, oldMax + 1])
+             
               // Slide x-axis left
               axis.transition()
                   .duration(duration)
