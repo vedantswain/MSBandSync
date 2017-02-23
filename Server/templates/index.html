@@ -42,7 +42,7 @@
         <script> 
         var API_endPoint = "http://"+"0.0.0.0"+":"+"5000/"+"data"
 
-        var limit = 5 * 1,
+        var limit = 10 * 1,
             duration = 350, //Time between multiple frames
             now = new Date(Date.now() - duration)
 
@@ -115,7 +115,7 @@
           $.getJSON(API_endPoint, function( data ) {
             
             // var json = JSON.parse(data);
-            console.log(new Date(JSON.parse(data[0]).timestamp))
+            // console.log(new Date(JSON.parse(data[0]).timestamp))
 
             for(var i in data){
 

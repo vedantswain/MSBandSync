@@ -2,6 +2,7 @@ package com.microsoft.band.sdk.sampleapp.test;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,6 +27,9 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
     Context context;
     AccelObject ao;
     OnDataPushTaskCompleted listener;
+    Boolean isRunning = true;
+
+    private static String TAG = "DataPushTask";
 
 
     public DataPushTask(Context context, AccelObject ao, OnDataPushTaskCompleted listener){
@@ -45,38 +49,47 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
     protected void onPostExecute(String msg) {
 //        Log.i(TAG, msg);
         listener.OnTaskCompleted(msg,ao);
+        if (msg.equals("Some error")){
+            cancel(true);
+            isRunning=false;
+        }
     }
 
     private String postData(){
-        String msg="";
-        HttpClient httpClient = new DefaultHttpClient();
-        String url= Common.SERVER_API+"/data";
-        HttpPost httpPost = new HttpPost(url);
-        JSONObject jsonObject=new JSONObject();
-        StringEntity se;
+        if(isRunning)
+            try {
+                String msg = "";
+                HttpClient httpClient = new DefaultHttpClient();
+                String url = Common.SERVER_API + "/data";
+                HttpPost httpPost = new HttpPost(url);
+                JSONObject jsonObject = new JSONObject();
+                StringEntity se;
 
-        try {
-            jsonObject.put("id",ao.getId());
-            jsonObject.put("timestamp",ao.getTimestamp());
-            jsonObject.put("x",ao.getX());
-            jsonObject.put("y",ao.getY());
-            jsonObject.put("z",ao.getZ());
 
-            se = new StringEntity(jsonObject.toString());
-            se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                jsonObject.put("id",ao.getId());
+                jsonObject.put("timestamp",ao.getTimestamp());
+                jsonObject.put("x",ao.getX());
+                jsonObject.put("y",ao.getY());
+                jsonObject.put("z",ao.getZ());
 
-            httpPost.setEntity(se);
-            HttpResponse response = httpClient.execute(httpPost);
+                se = new StringEntity(jsonObject.toString());
+                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
 
-//            Log.d(TAG, response.getStatusLine().toString());
-            String responseBody= EntityUtils.toString(response.getEntity());
-//            Log.d(TAG,responseBody );
-            return response.getStatusLine().toString();
-        }
-        catch (JSONException | IOException e){
-            e.printStackTrace();
-        }
+                httpPost.setEntity(se);
+                HttpResponse response = httpClient.execute(httpPost);
 
-        return msg;
+                Log.d(TAG, response.getStatusLine().toString());
+                String responseBody= EntityUtils.toString(response.getEntity());
+    //            Log.d(TAG,responseBody );
+                return response.getStatusLine().toString();
+            }
+            catch (JSONException | IOException e){
+                e.printStackTrace();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        return "Some error";
     }
 }

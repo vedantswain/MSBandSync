@@ -6,7 +6,7 @@ package com.microsoft.band.sdk.sampleapp.test;
 
 public class Common {
     public  static  String POSITION = "Wrist";
-    public  static  String SERVER_API = "http://128.61.23.159:5000";
+    public  static  String SERVER_API = "http://10.0.0.34:5000";
     public  static  final String PORT = "5000";
 
     public static void  setServerApi(String servAddr) {

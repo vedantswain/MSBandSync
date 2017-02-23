@@ -7,6 +7,7 @@ from flask import render_template
 
 import json
 import time
+import datetime
 import random
 import sys
 
@@ -45,6 +46,8 @@ def api_data():
 	elif request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
 		js = json.dumps(request.json)
 		# print "JSON Message: " + js
+		timeString  = datetime.datetime.fromtimestamp(request.json["timestamp"]/1000).strftime('%H:%M:%S')
+		print timeString
 		resp = Response(js, status=200, mimetype='application/json')
 		if dataNumber % displayFreq == 0:
 			dataList.append(js);

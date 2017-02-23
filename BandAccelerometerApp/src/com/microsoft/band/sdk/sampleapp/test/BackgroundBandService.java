@@ -18,9 +18,6 @@ import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.BandHeartRateEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Date;
 
 public class BackgroundBandService extends Service implements OnDataPushTaskCompleted{
@@ -48,6 +45,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
         this.listener = this;
 
         try {
+            Log.d(TAG,"Service trying");
             new MonitorTask().execute();
         } catch (Exception e) {
             Log.d("Error", e.getMessage());
@@ -59,19 +57,6 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private void writeFile(String sensorName, String outputData){
-        File dataFile = new File(BackgroundBandService.this.getExternalFilesDir("Data"),sensorName+".csv");
-        try {
-            dataFile.createNewFile();
-            FileOutputStream dataStream = new FileOutputStream(dataFile, true);
-            dataStream.write(outputData.getBytes());
-            dataStream.flush();
-            dataStream.close();
-        } catch (IOException e) {
-            Log.d("HeartRate", e.getMessage());
-        }
     }
 
     @Override
@@ -102,7 +87,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
 
     @Override
     public void OnTaskCompleted(String msg, AccelObject ao) {
-
+        Log.d(TAG,msg);
     }
 
     private class MonitorTask extends AsyncTask<Void, Void, Void> {
@@ -129,7 +114,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
                             Date d = new Date();
 
                             Log.d(TAG,"Time: "+(new Date(System.currentTimeMillis())).toString());
-                            Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
+//                            Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
 
                             AccelObject ao = new AccelObject(Common.POSITION,accelX,accelY,accelZ, System.currentTimeMillis());
                             (new DataPushTask(context,ao,listener)).execute();
