@@ -42,8 +42,8 @@
         <script> 
         var API_endPoint = "http://"+"0.0.0.0"+":"+"5000/"+"data"
 
-        var limit = 60 * 1,
-            duration = 250,
+        var limit = 5 * 1,
+            duration = 350, //Time between multiple frames
             now = new Date(Date.now() - duration)
 
         var width = 500,
@@ -115,7 +115,7 @@
           $.getJSON(API_endPoint, function( data ) {
             
             // var json = JSON.parse(data);
-            // console.log(data)
+            console.log(new Date(JSON.parse(data[0]).timestamp))
 
             for(var i in data){
 
@@ -127,25 +127,19 @@
               // now = new Date()
 
               // Add new values
-              for (var name in groups) {
-                  var group = groups[name]
-                  //group.data.push(group.value) // Real values arrive at irregular intervals
-                  if (name=="eventX") {
-                    group.data.push(obj.x*9.8)
-                  }
-                  else if (name=="eventY") {
-                    group.data.push(obj.y*9.8)
-                  }
-                  else if (name=="eventZ") {
-                    group.data.push(obj.z*9.8)
-                  }
-
-                  group.path.attr('d', line)
-                }
-
-                // Shift domain
-                x.domain([now - (limit - 2) * duration, now - duration])
+                groups["eventX"].data.push(obj.x*9.8)
+                groups["eventX"].path.attr('d', line)
+                
+                groups["eventY"].data.push(obj.y*9.8)
+                groups["eventY"].path.attr('d', line)
+                
+                groups["eventZ"].data.push(obj.z*9.8)
+                groups["eventZ"].path.attr('d', line)
+                
               }
+
+              // Shift domain
+              x.domain([now - (limit - 2) * duration, now - duration])
 
               // Slide x-axis left
               axis.transition()
@@ -163,9 +157,11 @@
                   .each('end', tick)
 
               // Remove oldest data point from each group
-              for (var name in groups) {
-                  var group = groups[name]
-                  group.data.shift()
+              for(var i in data){
+                for (var name in groups) {
+                    var group = groups[name]
+                    group.data.shift()
+                }
               }
 
             });

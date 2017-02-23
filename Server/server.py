@@ -16,8 +16,9 @@ app = Flask(__name__)
 dataList = []
 
 # To relax the number of entries in sent in 1 Ajax query
-displayFreq = 5
+displayFreq = 5      
 dataNumber = 0
+lastGet = time.time()*1000
 
 @app.route('/')
 def index():
@@ -28,6 +29,7 @@ def api_data():
 	global dataList
 	global displayFreq
 	global dataNumber
+	global lastGet
 
 	if request.method == 'GET':
 		# a = -5
@@ -36,6 +38,8 @@ def api_data():
 		# responseData = jsonify(result)
 		responseData = json.dumps(dataList)
 		# print(str(len(dataList))+" at "+str(time.time()))
+		# print (time.time()*1000) - lastGet
+		# lastGet = time.time()*1000
 		dataList = []
 		return responseData
 	elif request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
@@ -44,7 +48,7 @@ def api_data():
 		resp = Response(js, status=200, mimetype='application/json')
 		if dataNumber % displayFreq == 0:
 			dataList.append(js);
-		if len(dataList)>15:
+		if len(dataList)>20:
 			dataList.pop(0)
 		# dataNumber+=1
 		return resp
