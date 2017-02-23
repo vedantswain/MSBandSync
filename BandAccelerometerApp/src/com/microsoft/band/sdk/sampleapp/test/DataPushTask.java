@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,16 +26,16 @@ import java.io.IOException;
 public class DataPushTask extends AsyncTask<Void,Void,String> {
 
     Context context;
-    AccelObject ao;
+    JSONArray jsonArray;
     OnDataPushTaskCompleted listener;
     Boolean isRunning = true;
 
     private static String TAG = "DataPushTask";
 
 
-    public DataPushTask(Context context, AccelObject ao, OnDataPushTaskCompleted listener){
+    public DataPushTask(Context context, JSONArray jsonArray, OnDataPushTaskCompleted listener){
         this.context = context;
-        this.ao = ao;
+        this.jsonArray = jsonArray;
         this.listener = listener;
     }
 
@@ -48,7 +49,7 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
     @Override
     protected void onPostExecute(String msg) {
 //        Log.i(TAG, msg);
-        listener.OnTaskCompleted(msg,ao);
+        listener.OnTaskCompleted(msg);
         if (msg.equals("Some error")){
             cancel(true);
             isRunning=false;
@@ -66,11 +67,7 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
                 StringEntity se;
 
 
-                jsonObject.put("id",ao.getId());
-                jsonObject.put("timestamp",ao.getTimestamp());
-                jsonObject.put("x",ao.getX());
-                jsonObject.put("y",ao.getY());
-                jsonObject.put("z",ao.getZ());
+                jsonObject.put("data",jsonArray);
 
                 se = new StringEntity(jsonObject.toString());
                 se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));

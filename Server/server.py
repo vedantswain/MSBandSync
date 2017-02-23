@@ -44,16 +44,22 @@ def api_data():
 		dataList = []
 		return responseData
 	elif request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
-		js = json.dumps(request.json)
-		# print "JSON Message: " + js
-		timeString  = datetime.datetime.fromtimestamp(request.json["timestamp"]/1000).strftime('%H:%M:%S')
-		print timeString
-		resp = Response(js, status=200, mimetype='application/json')
-		if dataNumber % displayFreq == 0:
+		
+		allJSON = request.json["data"]
+
+		for jo in allJSON:
+			js = json.dumps(jo)
+			# print "JSON Message: " + js
+
+			timeString  = datetime.datetime.fromtimestamp(jo["timestamp"]/1000).strftime('%H:%M:%S')
+			# print timeString
+
+			resp = Response(js, status=200, mimetype='application/json')
+			# if dataNumber % displayFreq == 0:
 			dataList.append(js);
-		if len(dataList)>20:
-			dataList.pop(0)
-		# dataNumber+=1
+			# if len(dataList)>20:
+			# 	dataList.pop(0)
+			# dataNumber+=1
 		return resp
 
 

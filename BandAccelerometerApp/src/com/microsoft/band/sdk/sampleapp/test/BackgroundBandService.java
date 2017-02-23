@@ -18,6 +18,10 @@ import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.BandHeartRateEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 
 public class BackgroundBandService extends Service implements OnDataPushTaskCompleted{
@@ -36,9 +40,12 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
 
     private static final String TAG="BackgroundBandService";
 
+    JSONArray jsonArray;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
 
+        jsonArray = new JSONArray();
         Log.d(TAG,"Service running");
 
         this.context = this;
@@ -86,7 +93,8 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
     }
 
     @Override
-    public void OnTaskCompleted(String msg, AccelObject ao) {
+    public void OnTaskCompleted(String msg) {
+//        jsonArray = new JSONArray();
         Log.d(TAG,msg);
     }
 
@@ -117,7 +125,24 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
 //                            Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
 
                             AccelObject ao = new AccelObject(Common.POSITION,accelX,accelY,accelZ, System.currentTimeMillis());
-                            (new DataPushTask(context,ao,listener)).execute();
+
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("id",ao.getId());
+                                jsonObject.put("timestamp",ao.getTimestamp());
+                                jsonObject.put("x",ao.getX());
+                                jsonObject.put("y",ao.getY());
+                                jsonObject.put("z",ao.getZ());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            jsonArray.put(jsonObject);
+                            if (jsonArray.length()>16) {
+                                JSONArray jArray = jsonArray;
+                                (new DataPushTask(context, jArray, listener)).execute();
+                                jsonArray = new JSONArray();
+                            }
                         }
                     }
                 };

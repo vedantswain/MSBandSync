@@ -5,5 +5,5 @@ package com.microsoft.band.sdk.sampleapp.test;
  */
 
 public interface OnDataPushTaskCompleted {
-    void OnTaskCompleted(String msg, AccelObject ao);
+    void OnTaskCompleted(String msg);
 }
