@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .graph .axis {
+            stroke-width: 1;
+        }
+
+        .graph .axis .tick line {
+            stroke: black;
+        }
+
+        .graph .axis .tick text {
+            fill: black;
+            font-size: 0.7em;
+        }
+
+        .graph .axis .domain {
+            fill: none;
+            stroke: black;
+        }
+
+        .graph .group {
+            fill: none;
+            stroke: black;
+            stroke-width: 1.5;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="graph"></div>
+
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+        <script> 
+        var API_endPoint = "http://"+"0.0.0.0"+":"+"5000/"+"data"+"/Wrist"
+
+        var limit = 10 * 1,
+            duration = 500, //Time between multiple frames
+            now = new Date(Date.now() - duration)
+
+        var width = 500,
+            height = 200
+
+        var groups = {
+            eventX: {
+                value: 0,
+                color: 'orange',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            },
+            eventY: {
+                value: 0,
+                color: 'green',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            },
+            eventZ: {
+                value: 0,
+                color: 'grey',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            }
+        }
+
+        var x = d3.time.scale()
+            .domain([now - (limit - 2), now - duration])
+            .range([0, width])
+
+        var y = d3.scale.linear()
+            .domain([-10, 10])
+            .range([height, 0])
+
+        var line = d3.svg.line()
+            .interpolate('basis')
+            .x(function(d, i) {
+                return x(now - (limit - 1 - i) * duration)
+            })
+            .y(function(d) {
+                return y(d)
+            })
+
+        var svg = d3.select('.graph').append('svg')
+            .attr('class', 'chart')
+            .attr('width', width)
+            .attr('height', height + 50)
+
+        var axis = svg.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
+
+        var paths = svg.append('g')
+
+        for (var name in groups) {
+            var group = groups[name]
+            group.path = paths.append('path')
+                .data([group.data])
+                .attr('class', name + ' group')
+                .style('stroke', group.color)
+        }
+
+        function tick() {
+
+          $.getJSON(API_endPoint, function( data ) {
+            
+            // var json = JSON.parse(data);
+            // console.log(new Date(JSON.parse(data[0]).timestamp))
+
+            var oldMax = 10
+            var oldMin = -10
+
+            for(var i in data){
+
+              var obj = JSON.parse(data[i])
+              // var obj = data
+              // console.log(obj)
+
+              now = new Date(obj.timestamp)
+              // now = new Date()
+
+              // Add new values
+                groups["eventX"].data.push(obj.x*9.8)
+                groups["eventX"].path.attr('d', line)
+                
+                groups["eventY"].data.push(obj.y*9.8)
+                groups["eventY"].path.attr('d', line)
+                
+                groups["eventZ"].data.push(obj.z*9.8)
+                groups["eventZ"].path.attr('d', line)
+
+                oldMax = Math.max(10,oldMax,obj.x*9.8,obj.y*9.8,obj.z*9.8)
+                oldMin = Math.min(-10,oldMax,obj.x*9.8,obj.y*9.8,obj.z*9.8)
+                
+              }
+
+              // Shift domain
+              x.domain([now - (limit - 2) * duration, now - duration])
+              y.domain([oldMin - 1, oldMax + 1])
+             
+              // Slide x-axis left
+              axis.transition()
+                  .duration(duration)
+                  .ease('linear')
+                  .call(x.axis)
+
+
+              // Slide paths left
+              paths.attr('transform', null)
+                  .transition()
+                  .duration(duration)
+                  .ease('linear')
+                  .attr('transform', 'translate(' + x(now - (limit - 1) * duration) + ')')
+                  .each('end', tick)
+
+              // Remove oldest data point from each group
+              for(var i in data){
+                for (var name in groups) {
+                    var group = groups[name]
+                    group.data.shift()
+                }
+              }
+
+            });
+        }
+
+        tick()
+        </script>
+    </body>
+</html>

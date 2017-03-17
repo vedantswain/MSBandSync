@@ -61,13 +61,15 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
             try {
                 String msg = "";
                 HttpClient httpClient = new DefaultHttpClient();
-                String url = Common.SERVER_API + "/data";
+                String url = Common.SERVER_API + "/data"+"/"+Common.POSITION;
                 HttpPost httpPost = new HttpPost(url);
                 JSONObject jsonObject = new JSONObject();
                 StringEntity se;
 
 
                 jsonObject.put("data",jsonArray);
+
+                Log.d(TAG,"Data: "+jsonArray);
 
                 se = new StringEntity(jsonObject.toString());
                 se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));

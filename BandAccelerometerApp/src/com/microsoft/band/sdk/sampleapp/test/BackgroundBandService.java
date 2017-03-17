@@ -121,10 +121,12 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
 
                             Date d = new Date();
 
-                            Log.d(TAG,"Time: "+(new Date(System.currentTimeMillis())).toString());
+//                            Log.d(TAG,"Time: "+(new Date(System.currentTimeMillis())).toString());
 //                            Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
 
                             AccelObject ao = new AccelObject(Common.POSITION,accelX,accelY,accelZ, System.currentTimeMillis());
+
+                            LogFileWriter.axlLogWrite(Common.POSITION+","+ao.getX()+","+ao.getY()+","+ao.getZ()+","+ao.getTimestamp());
 
                             JSONObject jsonObject = new JSONObject();
                             try {
