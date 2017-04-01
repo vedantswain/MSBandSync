@@ -29,8 +29,8 @@ def wrist_index():
 def elbow_index():
 	return render_template('index2.html')
 
-@app.route('/data/<position>', methods = ['GET','POST'])
-def api_data(position):
+@app.route('/data/<sensortype>/<position>', methods = ['GET','POST'])
+def api_data(sensortype, position):
 	global dataDict
 	global dataList
 	global displayFreq
@@ -55,25 +55,25 @@ def api_data(position):
 		
 		allJSON = request.json["data"]
 
-		write_file(position,allJSON)
+		write_file(sensortype, position, allJSON)
 
 		for jo in allJSON:
 			js = json.dumps(jo)
 			# print "JSON Message: " + js
-			timeString  = datetime.datetime.fromtimestamp(jo["timestamp"]/1000).strftime('%H:%M:%S')
+			timeString = datetime.datetime.fromtimestamp(jo["timestamp"]/1000).strftime('%H:%M:%S')
 			# print timeString
 			resp = Response(js, status=200, mimetype='application/json')
 			# if dataNumber % displayFreq == 0:
 			dataDict[position].append(js)
-			if len(dataDict[position])>16:
+			if len(dataDict[position]) > 16:
 				dataDict[position].pop(0)
 			# dataNumber+=1
 		return resp
 
-def write_file(position,jsArr):
+def write_file(sensortype, position, jsArr):
 
 	HEADER = "position"+","+"x"+","+"y"+","+"z"+","+"timestamp"+"\n"
-	filename = "data/accel_"+position+".csv"
+	filename = "data/"+sensortype+"_"+position+".csv"
 
 	try:
 		file = open(filename, 'r')
@@ -81,16 +81,16 @@ def write_file(position,jsArr):
 		file = open(filename, 'w')
 
 	if os.stat(filename).st_size == 0:
-		with open(filename,"wb") as fo:
+		with open(filename, "wb") as fo:
 			fo.write(HEADER)
 
 	# print(write_str)
-	with open(filename,"a") as fo:
+	with open(filename, "a") as fo:
 		writer = csv.writer(fo, quoting=csv.QUOTE_NONNUMERIC)
 		for jo in jsArr:
 			js = json.dumps(jo)
 			js_data = json.loads(js)
-			writer.writerow((js_data['id'],js_data['x'],js_data['y'],js_data['z'],js_data['timestamp']))
+			writer.writerow((js_data['id'], js_data['x'], js_data['y'], js_data['z'], js_data['timestamp']))
 
 if __name__ == '__main__':
 
