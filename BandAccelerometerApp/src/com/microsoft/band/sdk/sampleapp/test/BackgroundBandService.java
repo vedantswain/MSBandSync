@@ -15,6 +15,8 @@ import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
 import com.microsoft.band.sensors.BandAccelerometerEvent;
 import com.microsoft.band.sensors.BandAccelerometerEventListener;
+import com.microsoft.band.sensors.BandGyroscopeEvent;
+import com.microsoft.band.sensors.BandGyroscopeEventListener;
 import com.microsoft.band.sensors.BandHeartRateEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
@@ -33,6 +35,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
     private Date currentAccelDate;
     private BandHeartRateEventListener mHeartRateEventListener;
     private BandAccelerometerEventListener mAccelerometerEventListener;
+    private BandGyroscopeEventListener mGyroscopeEventListener;
     private String outputHeartRate = "";
     private String outputAccelerometer = "";
     private int heartCounter = 0;
@@ -72,6 +75,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
         try {
 //            client.getSensorManager().unregisterHeartRateEventListener(mHeartRateEventListener);
             client.getSensorManager().unregisterAccelerometerEventListener(mAccelerometerEventListener);
+            client.getSensorManager().unregisterGyroscopeEventListener(mGyroscopeEventListener);
         } catch (BandIOException ex) {
             Log.d("BandException", ex.getMessage());
         } catch (NullPointerException ex) {
@@ -126,7 +130,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
 
                             AccelObject ao = new AccelObject(Common.POSITION,accelX,accelY,accelZ, System.currentTimeMillis());
 
-                            LogFileWriter.axlLogWrite(Common.POSITION+","+ao.getX()+","+ao.getY()+","+ao.getZ()+","+ao.getTimestamp());
+//                            LogFileWriter.axlLogWrite(Common.POSITION+","+ao.getX()+","+ao.getY()+","+ao.getZ()+","+ao.getTimestamp());
 
                             JSONObject jsonObject = new JSONObject();
                             try {
@@ -142,7 +146,49 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
                             jsonArray.put(jsonObject);
                             if (jsonArray.length()>16) {
                                 JSONArray jArray = jsonArray;
-                                (new DataPushTask(context, jArray, listener)).execute();
+                                (new DataPushTask(context, jArray, listener,ao.sensorType)).execute();
+                                jsonArray = new JSONArray();
+                            }
+                        }
+                    }
+                };
+
+                mGyroscopeEventListener = new BandGyroscopeEventListener() {
+                    @Override
+                    public void onBandGyroscopeChanged(BandGyroscopeEvent event) {
+
+                        if (event != null) {
+                            currentAccelDate = new Date();
+                            accelCounter += 1;
+
+                            float angulX = event.getAccelerationX();
+                            float angulY = event.getAccelerationY();
+                            float angulZ = event.getAccelerationZ();
+
+                            Date d = new Date();
+
+//                            Log.d(TAG,"Time: "+(new Date(System.currentTimeMillis())).toString());
+//                            Log.d(TAG, String.format(" X = %.3f , Y = %.3f , Z = %.3f", accelX,accelY,accelZ));
+
+                            GyroObject go = new GyroObject(Common.POSITION,angulX,angulY,angulZ, System.currentTimeMillis());
+
+//                            LogFileWriter.axlLogWrite(Common.POSITION+","+ao.getX()+","+ao.getY()+","+ao.getZ()+","+ao.getTimestamp());
+
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("id",go.getId());
+                                jsonObject.put("timestamp",go.getTimestamp());
+                                jsonObject.put("x",go.getX());
+                                jsonObject.put("y",go.getY());
+                                jsonObject.put("z",go.getZ());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            jsonArray.put(jsonObject);
+                            if (jsonArray.length()>16) {
+                                JSONArray jArray = jsonArray;
+                                (new DataPushTask(context, jArray, listener,go.sensorType)).execute();
                                 jsonArray = new JSONArray();
                             }
                         }
@@ -151,6 +197,7 @@ public class BackgroundBandService extends Service implements OnDataPushTaskComp
 
                 try {
                     client.getSensorManager().registerAccelerometerEventListener(mAccelerometerEventListener, SampleRate.MS16);
+                    client.getSensorManager().registerGyroscopeEventListener(mGyroscopeEventListener, SampleRate.MS16);
                 } catch (BandException ex) {
                     Log.d("BandException", ex.getMessage());
                 }

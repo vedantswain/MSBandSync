@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,14 +28,16 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
     JSONArray jsonArray;
     OnDataPushTaskCompleted listener;
     Boolean isRunning = true;
+    String sensorType;
 
     private static String TAG = "DataPushTask";
 
 
-    public DataPushTask(Context context, JSONArray jsonArray, OnDataPushTaskCompleted listener){
+    public DataPushTask(Context context, JSONArray jsonArray, OnDataPushTaskCompleted listener, String sensorType){
         this.context = context;
         this.jsonArray = jsonArray;
         this.listener = listener;
+        this.sensorType = sensorType;
     }
 
     @Override
@@ -61,7 +62,8 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
             try {
                 String msg = "";
                 HttpClient httpClient = new DefaultHttpClient();
-                String url = Common.SERVER_API + "/data"+"/"+Common.POSITION;
+                Log.d(TAG,"Current Server: "+Common.SERVER_API+", Current Pos: "+Common.POSITION);
+                String url = Common.SERVER_API + "/data/"+sensorType+"/"+Common.POSITION;
                 HttpPost httpPost = new HttpPost(url);
                 JSONObject jsonObject = new JSONObject();
                 StringEntity se;
@@ -72,14 +74,14 @@ public class DataPushTask extends AsyncTask<Void,Void,String> {
                 Log.d(TAG,"Data: "+jsonArray);
 
                 se = new StringEntity(jsonObject.toString());
-                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                se.setContentType(new BasicHeader("Content-Type","application/json"));
 
                 httpPost.setEntity(se);
                 HttpResponse response = httpClient.execute(httpPost);
 
                 Log.d(TAG, response.getStatusLine().toString());
                 String responseBody= EntityUtils.toString(response.getEntity());
-    //            Log.d(TAG,responseBody );
+                //            Log.d(TAG,responseBody );
                 return response.getStatusLine().toString();
             }
             catch (JSONException | IOException e){

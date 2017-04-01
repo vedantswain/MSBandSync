@@ -1,19 +1,18 @@
 package com.microsoft.band.sdk.sampleapp.test;
 
 /**
- * Created by vedantdasswain on 19/02/17.
+ * Created by vedantdasswain on 01/04/17.
  */
 
-public class AccelObject {
+public class GyroObject {
 
-    public String sensorType="accel";
-
+    public String sensorType="gyro";
 
     String id;
     long timestamp;
     float x,y,z;
 
-    public AccelObject(String id, float x, float y, float z, long timestamp){
+    public GyroObject(String id, float x, float y, float z, long timestamp){
         this.id = id;
         this.x = x;
         this.y = y;

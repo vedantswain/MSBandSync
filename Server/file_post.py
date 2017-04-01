@@ -3,7 +3,8 @@ import sys
 import csv
 
 # positions = ["a", "b", "x"]
-positions = ["x"]
+# positions = ["x"]
+positions = ["a"]
 
 if __name__ == '__main__':
 
@@ -26,7 +27,12 @@ if __name__ == '__main__':
 
 		diff_row_count = accel_row_count - gyro_row_count	# difference between rows of two files
 
-		f = fileinput.input(accelfilename, inplace=True) # sys.stdout is redirected to the file
+		if diff_row_count>0:
+			f = fileinput.input(accelfilename, inplace=True) # sys.stdout is redirected to the file
+		else:
+			diff_row_count = diff_row_count * -1
+			f = fileinput.input(gyrofilename, inplace=True)
+		
 		print next(f), # write header as first line
 
 		w = csv.writer(sys.stdout)
