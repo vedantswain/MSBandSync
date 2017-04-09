@@ -7,9 +7,9 @@ library("ggplot2")
 options("scipen"=100, "digits"=4)
 
 ## Synchronising with peaks
-accel_pos_a <- read.csv("peaks/accel_pos_a.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
-accel_pos_b <- read.csv("peaks/accel_pos_b.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
-accel_pos_x <- read.csv("peaks/accel_pos_x.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
+accel_pos_a <- read.csv("peaks_old/accel_pos_a.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
+accel_pos_b <- read.csv("peaks_old/accel_pos_b.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
+accel_pos_x <- read.csv("peaks_old/accel_pos_x.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
 
 accel_pos_ab <- merge(x = accel_pos_a, y = accel_pos_b, all = TRUE)
 accel_pos_abx <- merge(x = accel_pos_ab, y = accel_pos_x, all = TRUE)
