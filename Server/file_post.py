@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
 		diff_row_count = accel_row_count - gyro_row_count	# difference between rows of two files
 
-		if diff_row_count>0:
+		if diff_row_count > 0:
 			f = fileinput.input(accelfilename, inplace=True) # sys.stdout is redirected to the file
 		else:
 			diff_row_count = diff_row_count * -1

@@ -5,8 +5,8 @@ package com.microsoft.band.sdk.sampleapp.test;
  */
 
 public class Common {
-    public  static  String POSITION = "pos_a";
-    public  static  String SERVER_API = "http://10.0.0.34:5000";
+    public  static  String POSITION = "pos_b";
+    public  static  String SERVER_API = "http://10.0.0.25:5000";
     public  static  final String PORT = "5000";
 
     public static void  setServerApi(String servAddr) {

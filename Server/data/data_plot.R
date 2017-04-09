@@ -4,6 +4,8 @@ library("dplyr")
 library("car")
 library("ggplot2")
 
+options("scipen"=100, "digits"=4)
+
 ## Synchronising with peaks
 accel_pos_a <- read.csv("peaks/accel_pos_a.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
 accel_pos_b <- read.csv("peaks/accel_pos_b.csv", na.strings=c("", "NA"), stringsAsFactors = FALSE)
@@ -16,13 +18,14 @@ accel_pos_mag <- accel_pos_abx %>% mutate(force=sqrt(x^2+y^2+z^2))
 
 time_med <- median(accel_pos_mag$timestamp)
 time_max <- max(accel_pos_mag$timestamp)
+time_min <- min(accel_pos_mag$timestamp)
 time_quart <- (time_max+time_med)/2
   
 accel_plot <- ggplot(accel_pos_mag, aes(x = timestamp,
                                                     y = force, group=position, colour=position)) +
   geom_line() +
   labs(title="Sync",x = "Time", y = "Magnitude") +
-  xlim(time_quart,time_max) +
+  xlim(time_min,time_max) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 0,size=1),
         panel.grid.major = element_blank(),
